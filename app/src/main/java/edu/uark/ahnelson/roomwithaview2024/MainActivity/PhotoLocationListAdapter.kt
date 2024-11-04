@@ -16,9 +16,9 @@ Implements a ListAdapter holding Words in WordViewHolders
 Compares words with the WordsComparator
 @param onItemClicked the callback function when an itemView is clicked
  */
-class WordListAdapter(
+class PhotoLocationListAdapter(
     val onItemClicked:(id:Int)->Unit)
-    : ListAdapter<PhotoLocation, WordListAdapter.WordViewHolder>(WordsComparator()) {
+    : ListAdapter<PhotoLocation, PhotoLocationListAdapter.WordViewHolder>(WordsComparator()) {
 
     /**
      * onCreateViewHolder creates the viewHolder object

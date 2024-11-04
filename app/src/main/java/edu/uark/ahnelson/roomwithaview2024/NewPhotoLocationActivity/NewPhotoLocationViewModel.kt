@@ -9,7 +9,7 @@ import edu.uark.ahnelson.roomwithaview2024.Repository.PhotoLocation
 import edu.uark.ahnelson.roomwithaview2024.Repository.PhotoLocationRepository
 import kotlinx.coroutines.launch
 
-class NewWordViewModel(private val repository: PhotoLocationRepository) : ViewModel() {
+class NewPhotoLocationViewModel(private val repository: PhotoLocationRepository) : ViewModel() {
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
@@ -34,11 +34,11 @@ class NewWordViewModel(private val repository: PhotoLocationRepository) : ViewMo
     }
 }
 
-class NewWordViewModelFactory(private val repository: PhotoLocationRepository) : ViewModelProvider.Factory {
+class NewPhotoLocationViewModelFactory(private val repository: PhotoLocationRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NewWordViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(NewPhotoLocationViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return NewWordViewModel(repository) as T
+            return NewPhotoLocationViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

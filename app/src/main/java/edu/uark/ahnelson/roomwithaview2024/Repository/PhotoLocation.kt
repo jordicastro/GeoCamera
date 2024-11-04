@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "photo_location_table")
 data class PhotoLocation(
     @PrimaryKey(autoGenerate = true) val id: Int?,
-    @ColumnInfo(name="photoLocation") val photoLocation:String,
+    @ColumnInfo(name="photoPath") val photoPath:String,
     @ColumnInfo(name="photoLongitude") val photoLongitude:Double,
     @ColumnInfo(name="photoLatitude") val photoLatitude:Double,
     @ColumnInfo(name="photoDate") val photoDate:String,

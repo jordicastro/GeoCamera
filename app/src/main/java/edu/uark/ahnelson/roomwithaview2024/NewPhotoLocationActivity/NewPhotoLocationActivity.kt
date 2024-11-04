@@ -19,8 +19,8 @@ class NewPhotoLocationActivity : AppCompatActivity() {
 
     private lateinit var editWordView: EditText
     private lateinit var photoLocation: PhotoLocation
-    val newWordViewModel: NewWordViewModel by viewModels {
-        NewWordViewModelFactory((application as PhotoLocationApplication).repository)
+    val newPhotoLocationViewModel: NewPhotoLocationViewModel by viewModels {
+        NewPhotoLocationViewModelFactory((application as PhotoLocationApplication).repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,8 +45,8 @@ class NewPhotoLocationActivity : AppCompatActivity() {
             //Otherwise, start the viewModel with the id
             //And begin observing the word to set the text in the
             //text view
-            newWordViewModel.start(id)
-            newWordViewModel.photoLocation.observe(this){
+            newPhotoLocationViewModel.start(id)
+            newPhotoLocationViewModel.photoLocation.observe(this){
                 if(it != null){
                     editWordView.setText(it.id.toString())
                 }
@@ -65,10 +65,10 @@ class NewPhotoLocationActivity : AppCompatActivity() {
                 //If text isn't empty, determine whether to update
                 //or insert
                 val photoLocation = editWordView.text.toString()
-                if(newWordViewModel.photoLocation.value?.id == null){
-                    newWordViewModel.insert(PhotoLocation(null, photoLocation, 0.0, 0.0, "00-00-00", ""))
+                if(newPhotoLocationViewModel.photoLocation.value?.id == null){
+                    newPhotoLocationViewModel.insert(PhotoLocation(null, photoLocation, 0.0, 0.0, "00-00-00", ""))
                 }else{
-                    newWordViewModel.photoLocation.value?.let { it1 -> newWordViewModel.update(it1) }
+                    newPhotoLocationViewModel.photoLocation.value?.let { it1 -> newPhotoLocationViewModel.update(it1) }
                 }
                 //replyIntent.putExtra(EXTRA_REPLY, word)
                 setResult(Activity.RESULT_OK)

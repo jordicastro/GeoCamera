@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE"/>
+        </intent>
+    </queries>
+
     <application
         android:name=".PhotoLocationApplication"
         android:allowBackup="true"
@@ -25,6 +31,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+        android:authorities="edu.uark.ahnelson.roomwithaview2024.fileprovider"
+        android:name="androidx.core.content.FileProvider"
+        android:exported="false"
+        android:grantUriPermissions="true"
+        >
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths"/>
+
+    </provider>
+
     </application>
 
 </manifest>

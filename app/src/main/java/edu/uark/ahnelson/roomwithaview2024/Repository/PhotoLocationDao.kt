@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface PhotoLocationDao {
 
     @MapInfo(keyColumn = "id")
-    @Query("SELECT * FROM photo_location_table ORDER BY photoLocation ASC")
+    @Query("SELECT * FROM photo_location_table")
     fun getAlphabetizedPhotoLocations(): Flow<Map<Int,PhotoLocation>>
 
     @Update

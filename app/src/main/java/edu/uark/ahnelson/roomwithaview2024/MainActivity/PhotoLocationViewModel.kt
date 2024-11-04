@@ -9,7 +9,7 @@ import edu.uark.ahnelson.roomwithaview2024.Repository.PhotoLocation
 import edu.uark.ahnelson.roomwithaview2024.Repository.PhotoLocationRepository
 import kotlinx.coroutines.launch
 
-class WordViewModel(private val repository: PhotoLocationRepository) : ViewModel() {
+class PhotoLocationViewModel(private val repository: PhotoLocationRepository) : ViewModel() {
 
     // Using LiveData and caching what allWords returns has several benefits:
     // - We can put an observer on the data (instead of polling for changes) and only update the
@@ -25,11 +25,11 @@ class WordViewModel(private val repository: PhotoLocationRepository) : ViewModel
     }
 }
 
-class WordViewModelFactory(private val repository: PhotoLocationRepository) : ViewModelProvider.Factory {
+class PhotoLocationViewModelFactory(private val repository: PhotoLocationRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(WordViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(PhotoLocationViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return WordViewModel(repository) as T
+            return PhotoLocationViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
