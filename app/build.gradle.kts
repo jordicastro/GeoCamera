@@ -55,6 +55,9 @@ dependencies {
     // To use Kotlin Symbol Processing (KSP)
     ksp(libs.androidx.room.compiler)
 
+    //Google Play Location Service Component
+    implementation(libs.osmdroid.android)
+    implementation(libs.play.services.location)
 
     // Lifecycle components
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
