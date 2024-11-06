@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     val takePictureResultLauncher = registerForActivityResult(
         ActivityResultContracts
-        .StartActivityForResult()){
+            .StartActivityForResult()){
             result: ActivityResult ->
         if(result.resultCode == Activity.RESULT_CANCELED){
             Log.d("MainActivity","Picture Intent Cancelled")
@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity() {
 
             Log.d("MainActivity","Inserted into database: $newPhotoLocation")
 
-
         }
 
     }
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     /**
     Callback function passed through to RecyclerViewItems to launch
     A new activity based on id
-     @param id id of the item that is clicked
+    @param id id of the item that is clicked
      */
     fun launchNewPhotoLocationActivity(id:Int){
         val secondActivityIntent = Intent(this, NewPhotoLocationActivity::class.java)

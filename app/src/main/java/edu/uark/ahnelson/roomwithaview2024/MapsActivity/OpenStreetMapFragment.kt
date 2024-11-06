@@ -70,7 +70,7 @@ class OpenStreetMapFragment : Fragment(), Marker.OnMarkerClickListener {
         mMap.zoomController.setVisibility(CustomZoomButtonsController.Visibility.ALWAYS)
         addCopyrightOverlay()
         addLocationOverlay()
-        addCameraButtonOverlay() // custom button for camera
+        //addCameraButtonOverlay() // custom button for camera
         //addCompassOverlay()
         addMapScaleOverlay()
         addRotationOverlay()
