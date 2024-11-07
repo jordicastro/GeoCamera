@@ -69,31 +69,45 @@ class MapsActivity : AppCompatActivity() {
             .StartActivityForResult()){
             result: ActivityResult ->
         if(result.resultCode == Activity.RESULT_CANCELED){
-            Log.d("MainActivity","Picture Intent Cancelled")
+            Log.d("MapsActivity","Picture Intent Cancelled")
         }else{
             // get the description
             Log.d("MapsActivity","Picture Successfully taken at $currentPhotoPath")
-            // launch an intent to the newPhotoLocationActivity
+            // launch an intent to the newPhotoLocationActivity, pass in the add marker method as a callback
             val intent = Intent(this, EditPhotoLocationActivity::class.java).apply {
                 putExtra("PHOTO_PATH", currentPhotoPath)
                 putExtra("TIME_STAMP", currentTimeStamp)
                 putExtra("LONGITUDE", currentLongitude)
                 putExtra("LATITUDE", currentLatitude)
             }
-            startActivity(intent)
-//            // TODO: insert into database
-//            val newPhotoLocation = PhotoLocation(null, currentPhotoPath, currentLongitude, currentLatitude, currentTimeStamp, "description")
-//            newPhotoLocationViewModel.insert(newPhotoLocation)
-//
-//            Log.d("MapsActivity","Inserted into database: $newPhotoLocation")
+            resultLauncher.launch(intent)
 
         }
 
     }
 
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Log.d("MapsActivity", "MapsActivity: Result OK")
+            val data: Intent? = result.data
+            val markerId = data?.getIntExtra("MARKER_ID", -1) ?: -1
+            val latitude = data?.getDoubleExtra("LATITUDE", 0.0) ?: 0.0
+            val longitude = data?.getDoubleExtra("LONGITUDE", 0.0) ?: 0.0
+
+            if (markerId == -1) { // no new pin found, therefore add a new pin
+                Log.d("MapsActivity", "MapsActivity: No new pin found -> adding new marker")
+                addMarker(GeoPoint(latitude, longitude), markerId)
+            }
+        }
+    }
+
     //ViewModel object to communicate between Activity and repository
     private val photoLocationViewModel: PhotoLocationViewModel by viewModels {
         PhotoLocationViewModelFactory((application as PhotoLocationApplication).repository)
+    }
+
+    private val addMarker: (GeoPoint, Int) -> Unit = { geoPoint, id ->
+        mapsFragment.addMarker(geoPoint, id)
     }
 
     val requestPermissionLauncher = registerForActivityResult(
@@ -224,7 +238,7 @@ class MapsActivity : AppCompatActivity() {
         override fun locationUpdatedCallback(location: Location) {
             mCurrentLocation = location
             mapsFragment.changeCenterLocation(GeoPoint(location.latitude,location.longitude))
-            mapsFragment.addMarker(GeoPoint(location.latitude,location.longitude), 7)
+            // mapsFragment.addMarker(GeoPoint(location.latitude,location.longitude), 7) // TODO: add the photoLocation.markerId
 //            Log.d(
 //                "MainActivity",
 //                "Location is [Lat: ${location.latitude}, Long: ${location.longitude}]"

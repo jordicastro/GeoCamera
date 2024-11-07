@@ -23,8 +23,10 @@ import androidx.core.view.WindowInsetsCompat
 import edu.uark.ahnelson.roomwithaview2024.R
 import edu.uark.ahnelson.roomwithaview2024.Repository.PhotoLocation
 import edu.uark.ahnelson.roomwithaview2024.PhotoLocationApplication
+import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class EditPhotoLocationActivity : AppCompatActivity() {
@@ -43,6 +45,7 @@ class EditPhotoLocationActivity : AppCompatActivity() {
     private lateinit var timeStamp: String
     private var longitude: Double = 0.0
     private var latitude: Double = 0.0
+    private var markerId: Int = 0
 
     val newPhotoLocationViewModel: NewPhotoLocationViewModel by viewModels {
         NewPhotoLocationViewModelFactory((application as PhotoLocationApplication).repository)
@@ -58,6 +61,7 @@ class EditPhotoLocationActivity : AppCompatActivity() {
         timeStamp = intent.getStringExtra("TIME_STAMP") ?: ""
         longitude = intent.getDoubleExtra("LONGITUDE", 0.0)
         latitude = intent.getDoubleExtra("LATITUDE", 0.0)
+        markerId = intent.getIntExtra("MARKER_ID", 0)
 
 
         locationImageView = findViewById(R.id.location_image)
@@ -86,7 +90,7 @@ class EditPhotoLocationActivity : AppCompatActivity() {
         val id = intent.getIntExtra("EXTRA_ID",-1)
         //If it doesn't exist, create a new Word object
         if(id == -1){
-            photoLocation = PhotoLocation(null,"", 0.0, 0.0, "00-00-00", "")
+            photoLocation = PhotoLocation(null,"", 0.0, 0.0, "00-00-00", "", markerId)
         }else{
             //Otherwise, start the viewModel with the id
             //And begin observing the word to set the text in the
@@ -114,23 +118,68 @@ class EditPhotoLocationActivity : AppCompatActivity() {
                 //If text isn't empty, determine whether to update
                 //or insert
                 val photoDescription = editDescriptionText.text.toString()
-                if(newPhotoLocationViewModel.photoLocation.value?.id == null){
+                if(newPhotoLocationViewModel.photoLocation.value?.id == null ){
                     Log.d("EditPhotoLocationActivity", "inserting new photoLocation")
-                    newPhotoLocationViewModel.insert(PhotoLocation(null, photoPath, longitude, latitude, timeStamp, editDescriptionText.text.toString()))
+                    newPhotoLocationViewModel.insert(PhotoLocation(null, photoPath, longitude, latitude, timeStamp, editDescriptionText.text.toString(), markerId))
                     Log.d("EditPhotoLocationActivity", "successfully inserted new photoLocation photoPath $photoPath, timeStamp $timeStamp, longitude $longitude, latitude $latitude description $photoDescription")
+                    // use callback from MapsActivity to addMarker
                 }else{ // update the description ONLY
                     Log.d("EditPhotoLocationActivity", "updating photoLocation")
                     newPhotoLocationViewModel.photoLocation.value?.let { it1: PhotoLocation -> it1.photoDescription = photoDescription }
                     Log.d("EditPhotoLocationActivity", "successfully updated photoLocation")
+
                 }
-                Log.d("EditPhotoLocationActivity", "replyIntent")
+
+                // checking to see if the longitude and latitude are within x degrees of error OF ANOTHER photoLocation
+                val (isGroupedPin, groupMarkerId) = isAtSameLocation(newPhotoLocationViewModel.photoLocation.value)
+
+                if ( isGroupedPin ) {
+                    // if so, update the photoLocation
+                    // updateMarker(photoLocation)
+                    newPhotoLocationViewModel.photoLocation.value?.let { it1: PhotoLocation -> it1.markerId = groupMarkerId }
+                } else {
+                    // if not, pass in the markerId, longitude, latitude to the MapsActivity via a resultIntent to addMarker from the MapsActivity
+                }
+
                 //replyIntent.putExtra(EXTRA_REPLY, word)
-                setResult(Activity.RESULT_OK)
+
+                replyIntent.putExtra("MARKER_ID", markerId)
+                replyIntent.putExtra("LATITUDE", latitude)
+                replyIntent.putExtra("LONGITUDE", longitude)
+                Log.d("EditPhotoLocationActivity", "EditPhotoLocationActivity: replyIntent markerId $markerId, latitude $latitude, longitude $longitude")
+                setResult(Activity.RESULT_OK, replyIntent)
             }
             //End the activity
             finish()
         }
 
+    }
+
+    private fun isAtSameLocation(photoLocation: PhotoLocation?): Pair<Boolean, Int> {
+        // check if the photoLocation is within 50 meters of another photoLocation (equivalates to 0.0005 degrees)
+        // use the photoLocationRepository to get all photoLocations
+        // for each photoLocation, check if the long, lat are within x degrees of error
+        // if so, return true
+        val thisLatitude = photoLocation?.photoLatitude ?: 0.0
+        val thisLongitude = photoLocation?.photoLongitude?: 0.0
+
+        // loop through the repository
+        // for each photoLocation, check if the long, lat are within x degrees of error
+        var currentMarkerId = ""
+        val allPhotoLocations: List<PhotoLocation> = newPhotoLocationViewModel.getUniquePhotoLocations()
+        for (photoLocationX in allPhotoLocations) {
+            if (currentMarkerId == photoLocationX.markerId.toString()) {
+                continue
+            }
+            currentMarkerId = photoLocationX.markerId.toString()
+            val thatLatitude = photoLocationX.photoLatitude
+            val thatLongitude = photoLocationX.photoLongitude
+            if (abs(thisLatitude - thatLatitude) < 0.0005 && abs(thisLongitude - thatLongitude) < 0.0005) {
+                return Pair(true, photoLocationX.markerId)
+            }
+        }
+        // no group pin found, therefore add a new marker
+        return Pair(false, -1)
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

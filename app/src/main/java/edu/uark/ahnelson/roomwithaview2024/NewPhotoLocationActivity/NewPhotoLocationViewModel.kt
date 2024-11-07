@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import edu.uark.ahnelson.roomwithaview2024.Repository.PhotoLocation
 import edu.uark.ahnelson.roomwithaview2024.Repository.PhotoLocationRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class NewPhotoLocationViewModel(private val repository: PhotoLocationRepository) : ViewModel() {
@@ -31,6 +32,10 @@ class NewPhotoLocationViewModel(private val repository: PhotoLocationRepository)
 
     fun update(photoLocation: PhotoLocation) = viewModelScope.launch {
         repository.update(photoLocation)
+    }
+
+    fun getUniquePhotoLocations(): List<PhotoLocation> { // returns photo locations with unique markerIds (grouped by markerId)
+        return repository.getUniquePhotoLocations()
     }
 }
 

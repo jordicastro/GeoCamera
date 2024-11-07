@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             // setPic()
             Log.d("MainActivity","Picture Successfully taken at $currentPhotoPath")
             // TODO: insert into database
-            val newPhotoLocation = PhotoLocation(null, currentPhotoPath, 0.00, 0.00, currentTimeStamp, "description")
+            val newPhotoLocation = PhotoLocation(null, currentPhotoPath, 0.00, 0.00, currentTimeStamp, "description", -1)
             newPhotoLocationViewModel.insert(newPhotoLocation)
 
             Log.d("MainActivity","Inserted into database: $newPhotoLocation")
