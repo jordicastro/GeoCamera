@@ -15,7 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import edu.uark.ahnelson.roomwithaview2024.NewPhotoLocationActivity.NewPhotoLocationActivity
+import edu.uark.ahnelson.roomwithaview2024.NewPhotoLocationActivity.EditPhotoLocationActivity
 import edu.uark.ahnelson.roomwithaview2024.R
 import edu.uark.ahnelson.roomwithaview2024.PhotoLocationApplication
 import android.util.Log
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     @param id id of the item that is clicked
      */
     fun launchNewPhotoLocationActivity(id:Int){
-        val secondActivityIntent = Intent(this, NewPhotoLocationActivity::class.java)
+        val secondActivityIntent = Intent(this, EditPhotoLocationActivity::class.java)
         secondActivityIntent.putExtra("EXTRA_ID",id)
         this.startActivity(secondActivityIntent)
     }

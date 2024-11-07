@@ -11,5 +11,5 @@ data class PhotoLocation(
     @ColumnInfo(name="photoLongitude") val photoLongitude:Double,
     @ColumnInfo(name="photoLatitude") val photoLatitude:Double,
     @ColumnInfo(name="photoDate") val photoDate:String,
-    @ColumnInfo(name="photoDescription") val photoDescription:String
+    @ColumnInfo(name="photoDescription") var photoDescription:String
 )

@@ -20,18 +20,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import edu.uark.ahnelson.roomwithaview2024.MainActivity.PhotoLocationListAdapter
 import edu.uark.ahnelson.roomwithaview2024.MainActivity.PhotoLocationViewModel
 import edu.uark.ahnelson.roomwithaview2024.MainActivity.PhotoLocationViewModelFactory
+import edu.uark.ahnelson.roomwithaview2024.NewPhotoLocationActivity.EditPhotoLocationActivity
 import edu.uark.ahnelson.roomwithaview2024.PhotoLocationApplication
 import edu.uark.ahnelson.roomwithaview2024.R
-import edu.uark.ahnelson.roomwithaview2024.Repository.PhotoLocation
 import edu.uark.ahnelson.roomwithaview2024.Util.LocationUtilCallback
 import edu.uark.ahnelson.roomwithaview2024.Util.createLocationCallback
 import edu.uark.ahnelson.roomwithaview2024.Util.createLocationRequest
@@ -75,12 +72,20 @@ class MapsActivity : AppCompatActivity() {
             Log.d("MainActivity","Picture Intent Cancelled")
         }else{
             // get the description
-            Log.d("MainActivity","Picture Successfully taken at $currentPhotoPath")
-            // TODO: insert into database
-            val newPhotoLocation = PhotoLocation(null, currentPhotoPath, currentLongitude, currentLatitude, currentTimeStamp, "description")
-            newPhotoLocationViewModel.insert(newPhotoLocation)
-
-            Log.d("MapsActivity","Inserted into database: $newPhotoLocation")
+            Log.d("MapsActivity","Picture Successfully taken at $currentPhotoPath")
+            // launch an intent to the newPhotoLocationActivity
+            val intent = Intent(this, EditPhotoLocationActivity::class.java).apply {
+                putExtra("PHOTO_PATH", currentPhotoPath)
+                putExtra("TIME_STAMP", currentTimeStamp)
+                putExtra("LONGITUDE", currentLongitude)
+                putExtra("LATITUDE", currentLatitude)
+            }
+            startActivity(intent)
+//            // TODO: insert into database
+//            val newPhotoLocation = PhotoLocation(null, currentPhotoPath, currentLongitude, currentLatitude, currentTimeStamp, "description")
+//            newPhotoLocationViewModel.insert(newPhotoLocation)
+//
+//            Log.d("MapsActivity","Inserted into database: $newPhotoLocation")
 
         }
 
@@ -224,8 +229,9 @@ class MapsActivity : AppCompatActivity() {
 //                "MainActivity",
 //                "Location is [Lat: ${location.latitude}, Long: ${location.longitude}]"
 //            )
-            currentLatitude = location.latitude
-            currentLongitude = location.longitude
+            currentLatitude = location.longitude
+            currentLongitude = location.latitude
+            Log.d("MapsActivity", "MapsActivity: Location is [Lat: $currentLatitude, Long: $currentLongitude]")
         }
     }
 

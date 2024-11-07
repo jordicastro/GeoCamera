@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <ImageView
+        android:id="@+id/location_image"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_marginHorizontal="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        />
+
+
+    <LinearLayout
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/big_padding"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="0dp">
+
+        <!--    map_pin small-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="0.2"
+            android:padding="0dp"
+            android:src="@drawable/map_pin_small" />
+
+        <!-- Location textview in human-readable format   -->
+        <TextView
+            android:id="@+id/text_location"
+            android:layout_width="264dp"
+            android:layout_height="46dp"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:padding="0dp"
+            android:text=""
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_date"
+        android:layout_width="208dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/big_padding"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Taken on DATE"
+    />
+    <EditText
+        android:id="@+id/edit_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/min_height"
+        android:fontFamily="sans-serif-light"
+        android:hint="Photo Description"
+        android:inputType="textAutoComplete"
+        android:layout_margin="@dimen/big_padding"
+        android:textSize="18sp" />
+
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_padding"
+        android:text="@string/button_save"
+        android:textColor="@color/buttonLabel"
+        />
+
+</LinearLayout>
+
