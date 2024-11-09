@@ -60,8 +60,18 @@ class MapsActivity : AppCompatActivity() {
     private var currentTimeStamp = ""
     private var currentLongitude = 0.00
     private var currentLatitude = 0.00
+    private var currentMarkerId = 0
     private val newPhotoLocationViewModel : PhotoLocationViewModel by viewModels {
         PhotoLocationViewModelFactory((application as PhotoLocationApplication).repository)
+    }
+
+    private fun getNextMarkerId(increment: Boolean): Int {
+        if (increment)
+            currentMarkerId++
+        else
+            currentMarkerId--
+        Log.d("MapsActivity", "MapsActivity: currentMarkerId updated: $currentMarkerId")
+        return currentMarkerId
     }
 
     private val takePictureResultLauncher = registerForActivityResult(
@@ -74,14 +84,16 @@ class MapsActivity : AppCompatActivity() {
             // get the description
             Log.d("MapsActivity","Picture Successfully taken at $currentPhotoPath")
             // launch an intent to the newPhotoLocationActivity, pass in the add marker method as a callback
+            var nextMarkerId = getNextMarkerId(increment = true)
             val intent = Intent(this, EditPhotoLocationActivity::class.java).apply {
                 putExtra("PHOTO_PATH", currentPhotoPath)
                 putExtra("TIME_STAMP", currentTimeStamp)
                 putExtra("LONGITUDE", currentLongitude)
                 putExtra("LATITUDE", currentLatitude)
+                putExtra("MARKER_ID", nextMarkerId)
+                putExtra("ID", -1) // -1 means no id -> new photo location
             }
             resultLauncher.launch(intent)
-
         }
 
     }
@@ -93,10 +105,18 @@ class MapsActivity : AppCompatActivity() {
             val markerId = data?.getIntExtra("MARKER_ID", -1) ?: -1
             val latitude = data?.getDoubleExtra("LATITUDE", 0.0) ?: 0.0
             val longitude = data?.getDoubleExtra("LONGITUDE", 0.0) ?: 0.0
+            val uniqueness = data?.getBooleanExtra("UNIQUENESS", true) ?: true
 
-            if (markerId == -1) { // no new pin found, therefore add a new pin
+            Log.d("MapsActivity", "MapsActivity: MarkerId: $markerId, Latitude: $latitude, Longitude: $longitude, Uniqueness: $uniqueness")
+
+            if (markerId != currentMarkerId)
+                getNextMarkerId(increment = false)
+
+            if (uniqueness) { // no new pin found, therefore add a new pin
                 Log.d("MapsActivity", "MapsActivity: No new pin found -> adding new marker")
                 addMarker(GeoPoint(latitude, longitude), markerId)
+            } else {
+                Log.d("MapsActivity", "MapsActivity: GroupPinFound, PhotoLocation stored in database with markerId: $markerId")
             }
         }
     }
@@ -152,25 +172,20 @@ class MapsActivity : AppCompatActivity() {
         locationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         checkForLocationPermission()
 
-        // camera stuff
-        //Get reference to recyclerView object
-        //        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
-        //        //Create adapter class, passing the launchNewWordActivity callback
-        //        val adapter = PhotoLocationListAdapter(this::launchNewPhotoLocationActivity)
-        //        //Set the adapter for the recyclerView to the adapter object
-        //        recyclerView.adapter = adapter
-        //        //Set the recyclerview layout to be a linearLayoutManager with activity context
-        //        recyclerView.layoutManager = LinearLayoutManager(this)
-        //        //Start observing the words list (now map), and pass updates through
-        //        //to the adapter
-        //        photoLocationViewModel.allPhotoLocations.observe(this, Observer { photoLocations ->
-        //            // Update the cached copy of the words in the adapter.
-        //            photoLocations?.let { adapter.submitList(it.values.toList()) }
-        //        })
-
-        // fabTakePicture listener
         findViewById<FloatingActionButton>(R.id.fabTakePicture).setOnClickListener {
             takeAPicture()
+        }
+
+        newPhotoLocationViewModel.allPhotoLocations.observe(this) { photoLocations ->
+            // Clear existing markers
+             mapsFragment.mMap.overlays.clear()
+            // add your location back
+            mapsFragment.addLocationOverlay()
+
+            // Add markers for each photo location
+            for (photoLocation in photoLocations.values) {
+                addMarker(GeoPoint(photoLocation.photoLatitude,photoLocation.photoLongitude), photoLocation.markerId)
+            }
         }
 
     }
@@ -238,14 +253,14 @@ class MapsActivity : AppCompatActivity() {
         override fun locationUpdatedCallback(location: Location) {
             mCurrentLocation = location
             mapsFragment.changeCenterLocation(GeoPoint(location.latitude,location.longitude))
-            // mapsFragment.addMarker(GeoPoint(location.latitude,location.longitude), 7) // TODO: add the photoLocation.markerId
+            // mapsFragment.addMarker(GeoPoint(location.latitude,location.longitude), 7)
 //            Log.d(
 //                "MainActivity",
 //                "Location is [Lat: ${location.latitude}, Long: ${location.longitude}]"
 //            )
-            currentLatitude = location.longitude
-            currentLongitude = location.latitude
-            Log.d("MapsActivity", "MapsActivity: Location is [Lat: $currentLatitude, Long: $currentLongitude]")
+            currentLatitude = location.latitude
+            currentLongitude = location.longitude
+//            Log.d("MapsActivity", "MapsActivity: Location is [Lat: $currentLatitude, Long: $currentLongitude]")
         }
     }
 

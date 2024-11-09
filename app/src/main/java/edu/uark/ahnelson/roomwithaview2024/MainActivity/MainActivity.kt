@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         }else{
             // setPic()
             Log.d("MainActivity","Picture Successfully taken at $currentPhotoPath")
-            // TODO: insert into database
             val newPhotoLocation = PhotoLocation(null, currentPhotoPath, 0.00, 0.00, currentTimeStamp, "description", -1)
             newPhotoLocationViewModel.insert(newPhotoLocation)
 
@@ -77,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_pin)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

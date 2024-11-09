@@ -47,6 +47,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".PinActivity.PinActivity"
+            android:exported="true">
+        </activity>
+
         <provider
         android:authorities="edu.uark.ahnelson.roomwithaview2024.fileprovider"
         android:name="androidx.core.content.FileProvider"

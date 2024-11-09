@@ -24,7 +24,4 @@ interface PhotoLocationDao {
     @Query("DELETE FROM photo_location_table")
     suspend fun deleteAll()
 
-    // get unique markerIds only
-    @Query("SELECT * FROM photo_location_table GROUP BY markerId")
-    fun getUniquePhotoLocations(): List<PhotoLocation>
 }

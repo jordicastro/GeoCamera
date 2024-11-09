@@ -54,12 +54,11 @@ public abstract class PhotoLocationRoomDatabase : RoomDatabase() {
             photoLocationDao.deleteAll()
 
             // Add sample words.
-//            var photoLocation = PhotoLocation(null,"", 0.00, 0.00, "00-00-00", "", -7)
-//            photoLocationDao.insert(photoLocation)
+            val photoLocation = PhotoLocation(null,"", 0.00, 0.00, "00-00-00", "", -7)
+            photoLocationDao.insert(photoLocation)
 //            photoLocation = PhotoLocation(null,"", 0.00, 0.00, "00-00-00", "", -7)
 //            photoLocationDao.insert(photoLocation)
 
-            // TODO: Add your own words!
         }
     }
 }

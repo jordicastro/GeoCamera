@@ -24,9 +24,5 @@ class PhotoLocationRepository(private val photoLocationDao: PhotoLocationDao) {
         photoLocationDao.update(photoLocation)
     }
 
-    fun getUniquePhotoLocations(): List<PhotoLocation> {
-        return photoLocationDao.getUniquePhotoLocations()
-    }
 
-    // TODO: retreive all photoLocations with unique markerId
 }

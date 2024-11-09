@@ -1,5 +1,6 @@
 package edu.uark.ahnelson.roomwithaview2024.MapsActivity
 
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import edu.uark.ahnelson.roomwithaview2024.PinActivity.PinActivity
 import edu.uark.ahnelson.roomwithaview2024.R
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -28,7 +30,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 class OpenStreetMapFragment : Fragment(), Marker.OnMarkerClickListener {
 
-    private lateinit var mMap: MapView
+    public lateinit var mMap: MapView
     private lateinit var mLocationOverlay: MyLocationNewOverlay
     private lateinit var mCompassOverlay: CompassOverlay
     private var curLocation = GeoPoint(34.74, -92.28)
@@ -46,7 +48,6 @@ class OpenStreetMapFragment : Fragment(), Marker.OnMarkerClickListener {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_open_street_map, container, false)
         mMap = root.findViewById(R.id.map)
-
         setupMapOptions()
         val mapController = mMap.controller
         mapController.setZoom(3.1)
@@ -119,7 +120,7 @@ class OpenStreetMapFragment : Fragment(), Marker.OnMarkerClickListener {
         mMap.overlays.add(rotationGestureOverlay)
     }
 
-    private fun addLocationOverlay() {
+    fun addLocationOverlay() {
         mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), mMap)
         this.mLocationOverlay.enableMyLocation();
         mMap.overlays.add(mLocationOverlay)
@@ -187,7 +188,14 @@ class OpenStreetMapFragment : Fragment(), Marker.OnMarkerClickListener {
     override fun onMarkerClick(marker: Marker?, mapView: MapView?): Boolean {
         marker?.id?.let {
             Log.d("OpenStreetMapFragment", it)
+            val id = it.toInt()
             // TODO: launch detail view of marker, with id as parameter
+            val intent = Intent(requireContext(), PinActivity::class.java).apply {
+                putExtra("MARKER_ID", id)
+                putExtra("LATITUDE", marker.position.latitude)
+                putExtra("LONGITUDE", marker.position.longitude)
+            }
+            startActivity(intent)
             // the detailed activity will fetch all photos and descriptions with that location
         }
         return true
