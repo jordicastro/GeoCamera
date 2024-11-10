@@ -55,7 +55,7 @@ public abstract class PhotoLocationRoomDatabase : RoomDatabase() {
 
             // Add sample words.
             val photoLocation = PhotoLocation(null,"", 0.00, 0.00, "00-00-00", "", -7)
-            photoLocationDao.insert(photoLocation)
+            // photoLocationDao.insert(photoLocation)
 //            photoLocation = PhotoLocation(null,"", 0.00, 0.00, "00-00-00", "", -7)
 //            photoLocationDao.insert(photoLocation)
 

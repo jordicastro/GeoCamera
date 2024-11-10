@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import edu.uark.ahnelson.roomwithaview2024.NewPhotoLocationActivity.EditPhotoLocationActivity
 import edu.uark.ahnelson.roomwithaview2024.PinActivity.PinActivity
 import edu.uark.ahnelson.roomwithaview2024.R
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -190,10 +191,12 @@ class OpenStreetMapFragment : Fragment(), Marker.OnMarkerClickListener {
             Log.d("OpenStreetMapFragment", it)
             val id = it.toInt()
             // TODO: launch detail view of marker, with id as parameter
-            val intent = Intent(requireContext(), PinActivity::class.java).apply {
-                putExtra("MARKER_ID", id)
-                putExtra("LATITUDE", marker.position.latitude)
-                putExtra("LONGITUDE", marker.position.longitude)
+            val intent = Intent(requireContext(), EditPhotoLocationActivity::class.java).apply {
+                putExtra("PHOTO_PATH", "")
+                putExtra("TIME_STAMP", "")
+                putExtra("LONGITUDE", "")
+                putExtra("LATITUDE", "")
+                putExtra("ID", id)
             }
             startActivity(intent)
             // the detailed activity will fetch all photos and descriptions with that location

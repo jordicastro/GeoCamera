@@ -90,7 +90,7 @@ class MapsActivity : AppCompatActivity() {
                 putExtra("TIME_STAMP", currentTimeStamp)
                 putExtra("LONGITUDE", currentLongitude)
                 putExtra("LATITUDE", currentLatitude)
-                putExtra("MARKER_ID", nextMarkerId)
+//                putExtra("MARKER_ID", nextMarkerId)
                 putExtra("ID", -1) // -1 means no id -> new photo location
             }
             resultLauncher.launch(intent)
@@ -105,19 +105,21 @@ class MapsActivity : AppCompatActivity() {
             val markerId = data?.getIntExtra("MARKER_ID", -1) ?: -1
             val latitude = data?.getDoubleExtra("LATITUDE", 0.0) ?: 0.0
             val longitude = data?.getDoubleExtra("LONGITUDE", 0.0) ?: 0.0
-            val uniqueness = data?.getBooleanExtra("UNIQUENESS", true) ?: true
+//            val uniqueness = data?.getBooleanExtra("UNIQUENESS", true) ?: true
 
-            Log.d("MapsActivity", "MapsActivity: MarkerId: $markerId, Latitude: $latitude, Longitude: $longitude, Uniqueness: $uniqueness")
+            Log.d("MapsActivity", "MapsActivity: MarkerId: $markerId, Latitude: $latitude, Longitude: $longitude")
 
             if (markerId != currentMarkerId)
                 getNextMarkerId(increment = false)
 
-            if (uniqueness) { // no new pin found, therefore add a new pin
-                Log.d("MapsActivity", "MapsActivity: No new pin found -> adding new marker")
-                addMarker(GeoPoint(latitude, longitude), markerId)
-            } else {
-                Log.d("MapsActivity", "MapsActivity: GroupPinFound, PhotoLocation stored in database with markerId: $markerId")
-            }
+            // addMarker(GeoPoint(latitude, longitude), markerId)
+
+//            if (uniqueness) { // no new pin found, therefore add a new pin
+//                Log.d("MapsActivity", "MapsActivity: No new pin found -> adding new marker")
+//                addMarker(GeoPoint(latitude, longitude), markerId)
+//            } else {
+//                Log.d("MapsActivity", "MapsActivity: GroupPinFound, PhotoLocation stored in database with markerId: $markerId")
+//            }
         }
     }
 
@@ -180,11 +182,19 @@ class MapsActivity : AppCompatActivity() {
             // Clear existing markers
              mapsFragment.mMap.overlays.clear()
             // add your location back
-            mapsFragment.addLocationOverlay()
+             mapsFragment.addLocationOverlay()
+            Log.d("MapsActivity", "MapsActivity: repository change detected, adding all markers")
+            Log.d("MapsActivity", "MapsActivity: photoLocations: $photoLocations photoLocations.values: ${photoLocations.values}")
+            Log.d("MapsActivity", "MapsActivity: photoLocations values[3] ${photoLocations.values.elementAt(3)}")
 
             // Add markers for each photo location
             for (photoLocation in photoLocations.values) {
-                addMarker(GeoPoint(photoLocation.photoLatitude,photoLocation.photoLongitude), photoLocation.markerId)
+                photoLocation.id?.let {
+                    Log.d("MapsActivity", "MapsActivity: Adding marker for photoLocation with id: $it")
+                    addMarker(GeoPoint(photoLocation.photoLatitude,photoLocation.photoLongitude),
+                        it
+                    )
+                }
             }
         }
 

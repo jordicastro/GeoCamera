@@ -63,7 +63,7 @@ class EditPhotoLocationActivity : AppCompatActivity() {
         timeStamp = intent.getStringExtra("TIME_STAMP") ?: ""
         longitude = intent.getDoubleExtra("LONGITUDE", 0.0)
         latitude = intent.getDoubleExtra("LATITUDE", 0.0)
-        markerId = intent.getIntExtra("MARKER_ID", 0)
+//        markerId = intent.getIntExtra("MARKER_ID", 0)
         id = intent.getIntExtra("ID", -1)
 
 
@@ -103,7 +103,7 @@ class EditPhotoLocationActivity : AppCompatActivity() {
                     photoLocation = it
                     Log.d("EditPhotoLocationActivity", "PREV photoLocation $photoLocation")
                     editDescriptionText.setText(it.photoDescription)
-                     setHumanReadableLocation(it.photoLatitude, it.photoLongitude)
+                    setHumanReadableLocation(it.photoLatitude, it.photoLongitude)
                     setFormattedDate(it.photoDate)
                     setPic(it.photoPath)
                 }
@@ -140,38 +140,38 @@ class EditPhotoLocationActivity : AppCompatActivity() {
 
                 }
 
-            // checking to see if the longitude and latitude are within x degrees of error OF ANOTHER photoLocation
-            // is triggered upon insertion of a new photoLocation (to check if the location is unique)
-            var isUnique = true
+                // checking to see if the longitude and latitude are within x degrees of error OF ANOTHER photoLocation
+                // is triggered upon insertion of a new photoLocation (to check if the location is unique)
+//                var isUnique = true
+//
+//                newPhotoLocationViewModel.allPhotoLocations.observe(this) {
+//                    for (photoLocation in it.values) {
+//                        val thisLatitude = photoLocation.photoLatitude
+//                        val thisLongitude = photoLocation.photoLongitude
+//                        if (abs(thisLatitude - latitude) < 0.0005 && abs(thisLongitude - longitude) < 0.0005) {
+//                            Log.d("EditPhotoLocationActivity", "Location is not unique")
+//                            isUnique = false
+//                            newPhotoLocationViewModel.photoLocation.value?.let { it1 -> it1.markerId = photoLocation.markerId }
+//                            markerId = photoLocation.markerId
+//                            Log.d("EditPhotoLocationActivity", "EditPhotoLocationActivity: markerId $markerId")
+//                        }
+//                    }
+//                }
 
-            newPhotoLocationViewModel.allPhotoLocations.observe(this) {
-                for (photoLocation in it.values) {
-                    val thisLatitude = photoLocation.photoLatitude
-                    val thisLongitude = photoLocation.photoLongitude
-                    if (abs(thisLatitude - latitude) < 0.0005 && abs(thisLongitude - longitude) < 0.0005) {
-                        Log.d("EditPhotoLocationActivity", "Location is not unique")
-                        isUnique = false
-                        newPhotoLocationViewModel.photoLocation.value?.let { it1 -> it1.markerId = photoLocation.markerId }
-                        markerId = photoLocation.markerId
-                        Log.d("EditPhotoLocationActivity", "EditPhotoLocationActivity: markerId $markerId")
-                    }
-                }
+                // end the activity if the location is unique
+//                val uniqueness = isUnique
+                Log.d("EditPhotoLocationActivity", "Location is unique")
+                replyIntent.putExtra("MARKER_ID", markerId)
+                replyIntent.putExtra("LATITUDE", latitude)
+                replyIntent.putExtra("LONGITUDE", longitude)
+//                replyIntent.putExtra("UNIQUE", uniqueness)
+                Log.d("EditPhotoLocationActivity", "EditPhotoLocationActivity: replyIntent markerId $markerId, latitude $latitude, longitude $longitude")
+                setResult(Activity.RESULT_OK, replyIntent)
+                finishAndGoToMapsActivity()
+
             }
 
-            // end the activity if the location is unique
-            val uniqueness = isUnique
-            Log.d("EditPhotoLocationActivity", "Location is unique")
-            replyIntent.putExtra("MARKER_ID", markerId)
-            replyIntent.putExtra("LATITUDE", latitude)
-            replyIntent.putExtra("LONGITUDE", longitude)
-            replyIntent.putExtra("UNIQUE", uniqueness)
-            Log.d("EditPhotoLocationActivity", "EditPhotoLocationActivity: replyIntent markerId $markerId, latitude $latitude, longitude $longitude, uniqueness $uniqueness")
-            setResult(Activity.RESULT_OK, replyIntent)
-            finishAndGoToMapsActivity()
-
         }
-
-    }
 
     }
 
